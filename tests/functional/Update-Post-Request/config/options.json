@@ -1,0 +1,10 @@
+{
+  "testName":"Send_Put_Request",
+  "apiKey": "<API_KEY>",
+  "workspace": "User Workspace",
+  "project": "123ABC",
+  "testFolder": "TF78505",
+  "emailId": "<email_id>@email.com",
+  "iteration": "Sprint 3.01",
+  "userStoryID": "US1230643"
+}
