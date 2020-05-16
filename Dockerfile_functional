@@ -1,0 +1,21 @@
+FROM localhost:8444/latest
+
+# Install  GCC
+USER 0
+# Install the tools needed for openssl and cert extraction.
+RUN yum update -y \
+ && yum install -y --setopt=tsflags=nodocs gcc \
+ && yum clean all \
+ && rm -rf /var/lib/yum/repos/* \
+ && rm -rf /var/lib/yum/yumdb/*
+RUN yum install telnet -y
+
+USER 1001
+RUN mkdir -p $GOPATH/src/walk-the-camino/
+COPY . $GOPATH/src/walk-the-camino/
+
+USER 0
+RUN chmod -R 777  $GOPATH/src/walk-the-camino/
+
+USER 1001
+WORKDIR $GOPATH/src/walk-the-camino/tests/functional/

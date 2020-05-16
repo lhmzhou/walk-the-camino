@@ -1,0 +1,50 @@
+version: "3"
+services:
+  walk-the-camino:
+    image: walk-the-camino/walk-the-camino:latest
+    build: .
+    entrypoint: go run project.go
+    environment:
+      SSL_ENABLED: "true"
+      HTTP_PORT: "4444"
+      HTTP_LISTEN_ADDRESS: "0.0.0.0"
+      CERTFILE: "/cert/cert.crt"
+      KEYFILE: "/cert/cert.key"
+      TRUSTSTORE: "/cert/cert.crt"
+    networks:
+      - lhmzhou-network
+    volumes:
+      - ./cert:/cert/
+    ports:
+      - 3200:3200
+      - 8006:8006
+      - 4444:4444
+# unit Test cases
+  tests:
+    build: .
+    entrypoint: ./units.sh
+    volumes:
+      - ./.coverage/:/home/src/walk-the-camino/.coverage/
+    networks:
+      - lhmzhou-network
+# functional bdd test cases
+  functional:
+    build:
+      context: .
+      dockerfile: Dockerfile_functional
+    entrypoint: sh run.sh functional false false
+    volumes:
+      - ./report/:/home/src/walk-the-camino/tests/functional/report
+      - ./cert:/cert/
+    networks:
+      - lhmzhou-network
+    depends_on:
+      - walk-the-camino
+    environment:
+      CERTFILE: "/cert/cert.crt"
+networks:
+  default:
+    external: 
+      name: lhmzhou-network
+
+# docker-compose -f dev-compose.yml up
